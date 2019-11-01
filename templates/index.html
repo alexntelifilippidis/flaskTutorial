@@ -6,7 +6,11 @@
 
 
 {% block body %}
-
+    <h2>Todo list of {{ name }}</h2>
+    <form action="" method="POST">
+        <input type="text" name="name" placeholder="Όνομα">
+        <button>OK</button>
+    </form>
     <ul>
     {% for todo in todos %}
         <li>
@@ -19,6 +23,5 @@
         </li>
     {% endfor %}
     </ul>
-    {% include 'example.html' %}
 {% endblock %}
 

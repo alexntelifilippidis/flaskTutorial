@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 app = Flask(__name__)
 
 todos = [
@@ -28,14 +28,15 @@ todos = [
     }
 ]
 
-@app.route('/home')
-@app.route('/')
+@app.route('/home', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def hello_world():
-    return render_template('index.html', todos=todos)
+    name = request.values.get('name', 'All')
+    return render_template('index.html', todos=todos, name=name)
 
-@app.route('/todolist')
-def todolist():
-    return render_template('todolist.html')
+@app.route('/todolist/<name>')
+def todolist(name):
+    return render_template('todolist.html', name=name)
 
 if __name__ == '__main__':
     app.run(debug=True)
