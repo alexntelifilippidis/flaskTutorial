@@ -31,8 +31,8 @@ todos = [
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
-    name = request.values.get('name', 'All')
-    return render_template('index.html', todos=todos, name=name)
+    todo = request.values.get('todo', 'All')
+    return render_template('index.html', todos=todos, todo=todo)
 
 @app.route('/todolist/<name>')
 def todolist(name):
