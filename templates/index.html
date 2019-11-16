@@ -17,9 +17,7 @@
             {% for todo in todos | selectattr('status', "equalto", 0) %}
                 {% set checked = 'checked' if todo.status == 1 else '' %}
                 <li class="default">
-                    <span class="{{'done' if todo.status == 1 else ''}}">
-                        {{ todo.name }}
-                    </span>
+                    <a href="{{ url_for('edit', id=todo.id) }}">{{ todo.name }}</a>
                     <input type="checkbox" data-id="{{ todo.id }}" {{ checked }}>
                     {% if todo.status == 1 %}
                         <a href="{{ url_for('delete', id=todo.id) }}">
@@ -35,7 +33,7 @@
             {% for todo in todos | selectattr('status', "equalto", 1) %}
                 {% set checked = 'checked' if todo.status == 1 else '' %}
                 <li class="default">
-                    <span class="{{'done' if todo.status == 1 else ''}}">
+                    <span class="done">
                         {{ todo.name }}
                     </span>
                     <input type="checkbox" data-id="{{ todo.id }}" {{ checked }}>

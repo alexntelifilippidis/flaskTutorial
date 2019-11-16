@@ -8,6 +8,10 @@ def getTodos():
     with open('todos.json', encoding="utf8") as json_file:
         return json.load(json_file)
 
+def getTodo(id):
+    todos = getTodos()
+    return next(filter(lambda x: x['id'] == int(id), todos))
+
 def addTodo(todo):
     todos = getTodos()
     todos.append(todo)
@@ -28,12 +32,20 @@ def deleteTodo(id):
     with open('todos.json', 'w', encoding="utf8") as json_file:
         return json.dump(todos, json_file, ensure_ascii = False)
 
+def updateTodo(todo_toedit):
+    todos = getTodos()
+    todo = next(filter(lambda x: x['id'] == int(todo_toedit['id']), todos))
+    todo['name'] = todo_toedit['name']
+    with open('todos.json', 'w', encoding="utf8") as json_file:
+        return json.dump(todos, json_file, ensure_ascii = False)
+
+
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         now = datetime.now()
-        todo_name = request.form.get('todo_name', 'All')
+        todo_name = request.form.get('todo_name')
         todoDict = {
             'id': int(datetime.timestamp(now)),
             'name' : todo_name,
@@ -54,6 +66,17 @@ def toggle(id):
 def delete(id):
     deleteTodo(id)
     return redirect(url_for('index'))
+
+
+@app.route('/edit/<id>', methods=['GET', 'POST'])
+def edit(id):
+    todo = getTodo(id)
+    if request.method == 'POST':
+        todo_name = request.form.get('todo_name')
+        todo['name'] = todo_name
+        updateTodo(todo)
+        return redirect(url_for('index'))
+    return render_template('edit.html', todo=todo)
 
 if __name__ == '__main__':
     app.run(debug=True)
