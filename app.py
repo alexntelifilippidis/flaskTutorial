@@ -1,38 +1,34 @@
 from flask import Flask, render_template, request
+from datetime import datetime
+import json
+
 app = Flask(__name__)
 
-todos = [
-    {
-        'name': 'Να παω supermarket',
-        'status': 1,
-        'created_at': '2019-10-30 10:10:00',
-        'deadline': None
-    },
-    {
-        'name': 'Τηλέφωνο στον πελάτη',
-        'status': 0,
-        'created_at': '2019-10-29 11:05:00',
-        'deadline': '2019-11-01 11:05:00'
-    },
-    {
-        'name': 'Να παω για κούρεμα',
-        'status': 1,
-        'created_at': '2019-10-31 17:13:00',
-        'deadline': None
-    },
-    {
-        'name': 'Να πληρώσω τη ΔΕΗ',
-        'status': 1,
-        'created_at': '2019-10-31 17:13:00',
-        'deadline': None
-    }
-]
+def getTodos():
+    with open('todos.json', encoding="utf8") as json_file:
+        return json.load(json_file)
+
+def addTodo(todo):
+    todos = getTodos()
+    todos.append(todo)
+    with open('todos.json', 'w', encoding="utf8") as json_file:
+        return json.dump(todos, json_file, ensure_ascii = False)
 
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def hello_world():
-    todo = request.values.get('todo', 'All')
-    return render_template('index.html', todos=todos, todo=todo)
+    if request.method == 'POST':
+        now = datetime.now()
+        todo_name = request.form.get('todo_name', 'All')
+        todoDict = {
+            'id': int(datetime.timestamp(now)),
+            'name' : todo_name,
+            'status': 0,
+            'create_at': now.strftime("%d-%m-%Y %H:%M:%S"),
+            'deadline': None
+        }
+        addTodo(todoDict)
+    return render_template('index.html', todos=getTodos())
 
 @app.route('/todolist/<name>')
 def todolist(name):
