@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 import json
 
@@ -14,9 +14,16 @@ def addTodo(todo):
     with open('todos.json', 'w', encoding="utf8") as json_file:
         return json.dump(todos, json_file, ensure_ascii = False)
 
+def toggleTodo(id):
+    todos = getTodos()
+    todo = next(filter(lambda x: x['id'] == int(id), todos))
+    todo['status'] = abs(todo['status'] - 1)
+    with open('todos.json', 'w', encoding="utf8") as json_file:
+        return json.dump(todos, json_file, ensure_ascii = False)
+
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
-def hello_world():
+def index():
     if request.method == 'POST':
         now = datetime.now()
         todo_name = request.form.get('todo_name', 'All')
@@ -30,9 +37,9 @@ def hello_world():
         addTodo(todoDict)
     return render_template('index.html', todos=getTodos())
 
-@app.route('/todolist/<name>')
-def todolist(name):
-    return render_template('todolist.html', name=name)
-
+@app.route('/toggle/<id>')
+def toggle(id):
+    toggleTodo(id)
+    return redirect(url_for('index'))
 if __name__ == '__main__':
     app.run(debug=True)

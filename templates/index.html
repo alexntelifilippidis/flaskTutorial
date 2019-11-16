@@ -15,9 +15,17 @@
             </form>
             <ul>
             {% for todo in todos %}
+                {% set checked = 'checked' if todo.status == 1 else '' %}
                 <li class="default {{'done' if todo.status == 1 else ''}}">
                     {{ todo.name }}
-                    <input type="checkbox"> 
+                    <input type="checkbox" data-id="{{ todo.id }}" {{ checked }}> 
+                    <!-- <a href="{{ url_for('toggle', id=todo.id) }}">
+                        {% if todo.status == 0 %}
+                        Ολοκληρώθηκε
+                        {% else %}
+                        Αναίρεση
+                        {%endif%}
+                    </a> -->
                 </li>
             {% endfor %}
             </ul>
