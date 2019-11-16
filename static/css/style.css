@@ -24,7 +24,7 @@ li.default{
     text-align: left
 }
 
-li.done {
+.done {
     text-decoration: line-through;
 }
 
@@ -36,4 +36,8 @@ li.default:last-child{
     display: inline-block;
     width: 60%;
     text-align: center;
+}
+
+a {
+    text-decoration: none;
 }

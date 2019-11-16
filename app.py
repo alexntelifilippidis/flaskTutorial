@@ -21,6 +21,13 @@ def toggleTodo(id):
     with open('todos.json', 'w', encoding="utf8") as json_file:
         return json.dump(todos, json_file, ensure_ascii = False)
 
+def deleteTodo(id):
+    todos = getTodos()
+    # todos = list(filter(lambda x: x['id'] != int(id), todos))
+    todos = list([x for x in todos if x['id'] != int(id)])
+    with open('todos.json', 'w', encoding="utf8") as json_file:
+        return json.dump(todos, json_file, ensure_ascii = False)
+
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -41,5 +48,12 @@ def index():
 def toggle(id):
     toggleTodo(id)
     return redirect(url_for('index'))
+
+
+@app.route('/delete/<id>')
+def delete(id):
+    deleteTodo(id)
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(debug=True)

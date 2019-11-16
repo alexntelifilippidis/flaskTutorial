@@ -14,18 +14,36 @@
                 <button>OK</button>
             </form>
             <ul>
-            {% for todo in todos %}
+            {% for todo in todos | selectattr('status', "equalto", 0) %}
                 {% set checked = 'checked' if todo.status == 1 else '' %}
-                <li class="default {{'done' if todo.status == 1 else ''}}">
-                    {{ todo.name }}
-                    <input type="checkbox" data-id="{{ todo.id }}" {{ checked }}> 
-                    <!-- <a href="{{ url_for('toggle', id=todo.id) }}">
-                        {% if todo.status == 0 %}
-                        Ολοκληρώθηκε
-                        {% else %}
-                        Αναίρεση
-                        {%endif%}
-                    </a> -->
+                <li class="default">
+                    <span class="{{'done' if todo.status == 1 else ''}}">
+                        {{ todo.name }}
+                    </span>
+                    <input type="checkbox" data-id="{{ todo.id }}" {{ checked }}>
+                    {% if todo.status == 1 %}
+                        <a href="{{ url_for('delete', id=todo.id) }}">
+                            <img src="{{url_for('static', filename='images/remove.png')}}" alt="">
+                        </a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+            <hr>
+            <h3>Completed</h3>
+            <ul>
+            {% for todo in todos | selectattr('status', "equalto", 1) %}
+                {% set checked = 'checked' if todo.status == 1 else '' %}
+                <li class="default">
+                    <span class="{{'done' if todo.status == 1 else ''}}">
+                        {{ todo.name }}
+                    </span>
+                    <input type="checkbox" data-id="{{ todo.id }}" {{ checked }}>
+                    {% if todo.status == 1 %}
+                        <a href="{{ url_for('delete', id=todo.id) }}">
+                            <img src="{{url_for('static', filename='images/remove.png')}}" alt="">
+                        </a>
+                    {% endif %}
                 </li>
             {% endfor %}
             </ul>
